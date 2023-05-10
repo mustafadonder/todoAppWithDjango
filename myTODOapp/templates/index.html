@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <!--- Bootstrap'ten yararlandım bunun için link alt satırda --->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Yapılacaklar Uygulaması</title>
+</head>
+<body style="background-color: #F5FFFA">
+
+    <div style="margin-top:150px" class="container"> <!--- Yukarıdan 150 pixel boşluk bırakıyoruz --->
+        <h3 style="color:#30d5c8">Yapılacaklar Uygulamasına Hoşgeldiniz..</h3>
+        <hr> <!--- Altını çizmemizi sağlıyor--->
+        <p>{{Hosgeldiniz}}</p>
+
+        <form action="/Gorevler" method="POST"> <!--- bu formun gorevlere gitmesini istediğimiz icin post request methodunu ve action belirttik  --->
+            {% csrf_token %} <!--- django bu tokenin her form içerisinde bulunmasını istiyor cross side request fogery hatasını engellemek için bir yöntem--->
+            <div class="form-group">
+                <label for="formGroupExampleInput">Yapılacak Görevler</label>
+                <!--- Forma kullanıcının ne yapması gerektiğiyle ilgili hint koyduk --->
+                <input type="text" name="title" class="form-control" id="formGroupExampleInput" placeholder="Yapılacak görevi giriniz..">
+            </div>
+            <!--- Yeni görev eklenebilecek butonu koyuyoruz ve submit tipinde olduğunu belirtiyoruz --->
+            <button type="submit" style="background-color:#eb7e1a" class="btn btn-danger"> Görevlere Ekle </button>
+        </form>
+        <hr>
+        {% if todos %} <!--- yapılackların gelip gelmediğini kontrol ediyoruz --->
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Sayı</th>
+              <th scope="col">Görev</th>
+              <th scope="col">Görevin Durumu</th>
+              <th scope="col">Durumu Güncelle</th>
+              <th scope="col">Kaldır</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!--- Burada her bir yapılacak görevi <td> yapısı altında gösteriyoruz --->
+            {% for todo in todos %}
+                <tr>
+                  <th scope="row">{{todo.id}}</th> <!--- Yanı görevin id'si 1 ise 1 urlsine gidiyoruz --->
+                  <td>{{todo.title}}</td>
+                  {% if todo.completed %}<!--- True ve false olarak gelen completed verisini anlaşılır ifade olarak yazıyoruz --->
+                  <td>Tamamlanmış Görev</td>
+                  {% else %}
+                  <td>Aktif Görev</td>
+                  {% endif %}
+                  {% if todo.completed %}<!--- Burada görevin durumuna göre butonun değişmesini sağlıyoruz --->
+                  <td><a href="/update/{{todo.id}}" class="btn btn-danger" >Görevi Aktifleştir</a></td>
+                  {% else %}
+                  <td><a href="/update/{{todo.id}}" class="btn btn-danger" style="background-color: green">Tamamlanmış Görev</a></td>
+                  {% endif %}
+                  <td><a href="/delete/{{todo.id}}" class="btn btn-danger" style="background-color: blue">Görevi Sil</a></td>
+                </tr>
+            {% endfor %}
+
+
+          </tbody>
+        </table>
+        {% else %} <!--- Yapılacak herhangi birşeyimiz yoksa listede ekrana alert yazdırıyoruz--->
+        <div class = "alert alert-danger">
+            Herhangi bir göreviniz bulunmamaktadır..
+        </div>
+        {% endif %}
+        <p>{{Mesaj}}</p>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
